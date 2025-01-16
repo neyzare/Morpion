@@ -3,14 +3,7 @@ import "../css/game.css";
 import rond from "../assets/circle.svg";
 import crois from "../assets/cross.svg";
 
-export function InitialiseBoard({
-    victoiresX,
-    victoiresO,
-    matchNul,
-    incrementeVictoireX,
-    incrementeVictoireO,
-    incrementeMatchNul,
-}) {
+export function InitialiseBoard({ player1, player2, updateScores }) {
     const [board, setBoard] = useState(Array(3).fill(null).map(() => Array(3).fill(null)));
     const [isXNext, setIsXNext] = useState(true);
     const [winner, setWinner] = useState(null);
@@ -51,17 +44,13 @@ export function InitialiseBoard({
 
         if (newBoard.every((row) => row.every((cell) => cell !== null))) {
             setWinner("Nul");
-            incrementeMatchNul();
         }
     };
 
     const declareWinner = (player) => {
-        setWinner(player);
-        if (player === "X") {
-            incrementeVictoireX();
-        } else {
-            incrementeVictoireO();
-        }
+        const winnerName = player === "X" ? player1 : player2;
+        setWinner(winnerName);
+        updateScores(winnerName); 
     };
 
     const resetGame = () => {
@@ -93,7 +82,7 @@ export function InitialiseBoard({
                                 style={{
                                     width: "80px",
                                     height: "80px",
-                                    objectFit: "contain",
+                                    objectFit: "contain",d
                                     position: "absolute",
                                     top: "50%",
                                     left: "50%",
@@ -132,7 +121,7 @@ export function InitialiseBoard({
                     <button onClick={resetGame}>Recommencer</button>
                 </div>
             )}
-            {!winner && <p>Tour de : {isXNext ? "X" : "O"}</p>}
+            {!winner && <p>Tour de : {isXNext ? player1 : player2}</p>}
         </div>
     );
 }
