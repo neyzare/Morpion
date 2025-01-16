@@ -1,0 +1,138 @@
+import React, { useState } from "react";
+import "../css/game.css";
+import rond from "../assets/circle.svg";
+import crois from "../assets/cross.svg";
+
+export function InitialiseBoard({
+    victoiresX,
+    victoiresO,
+    matchNul,
+    incrementeVictoireX,
+    incrementeVictoireO,
+    incrementeMatchNul,
+}) {
+    const [board, setBoard] = useState(Array(3).fill(null).map(() => Array(3).fill(null)));
+    const [isXNext, setIsXNext] = useState(true);
+    const [winner, setWinner] = useState(null);
+
+    const handleClick = (i, j) => {
+        if (board[i][j] !== null || winner) return;
+
+        const newBoard = board.map((row, rowIndex) =>
+            rowIndex === i
+                ? row.map((cell, colIndex) => (colIndex === j ? (isXNext ? "X" : "O") : cell))
+                : row
+        );
+
+        setBoard(newBoard);
+        setIsXNext(!isXNext);
+        checkWinner(newBoard);
+    };
+
+    const checkWinner = (newBoard) => {
+        for (let i = 0; i < 3; i++) {
+            if (newBoard[i][0] && newBoard[i][0] === newBoard[i][1] && newBoard[i][0] === newBoard[i][2]) {
+                declareWinner(newBoard[i][0]);
+                return;
+            }
+            if (newBoard[0][i] && newBoard[0][i] === newBoard[1][i] && newBoard[0][i] === newBoard[2][i]) {
+                declareWinner(newBoard[0][i]);
+                return;
+            }
+        }
+        if (newBoard[0][0] && newBoard[0][0] === newBoard[1][1] && newBoard[0][0] === newBoard[2][2]) {
+            declareWinner(newBoard[0][0]);
+            return;
+        }
+        if (newBoard[0][2] && newBoard[0][2] === newBoard[1][1] && newBoard[0][2] === newBoard[2][0]) {
+            declareWinner(newBoard[0][2]);
+            return;
+        }
+
+        if (newBoard.every((row) => row.every((cell) => cell !== null))) {
+            setWinner("Nul");
+            incrementeMatchNul();
+        }
+    };
+
+    const declareWinner = (player) => {
+        setWinner(player);
+        if (player === "X") {
+            incrementeVictoireX();
+        } else {
+            incrementeVictoireO();
+        }
+    };
+
+    const resetGame = () => {
+        setBoard(Array(3).fill(null).map(() => Array(3).fill(null)));
+        setWinner(null);
+        setIsXNext(true);
+    };
+
+    const renderBoard = () => {
+        return board.map((row, i) => (
+            <tr key={`row-${i}`}>
+                {row.map((cell, j) => (
+                    <td
+                        key={`cell-${i}-${j}`}
+                        onClick={() => handleClick(i, j)}
+                        style={{
+                            width: "100px",
+                            height: "100px",
+                            textAlign: "center",
+                            border: "1px solid #000",
+                            verticalAlign: "middle",
+                            position: "relative",
+                        }}
+                    >
+                        {cell === "X" ? (
+                            <img
+                                src={crois}
+                                alt="Croix"
+                                style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    objectFit: "contain",
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                }}
+                            />
+                        ) : cell === "O" ? (
+                            <img
+                                src={rond}
+                                alt="Rond"
+                                style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    objectFit: "contain",
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                }}
+                            />
+                        ) : null}
+                    </td>
+                ))}
+            </tr>
+        ));
+    };
+
+    return (
+        <div>
+            <table>
+                <tbody>{renderBoard()}</tbody>
+            </table>
+            {winner && (
+                <div>
+                    {winner === "Nul" ? <p>Match nul !</p> : <p>Le gagnant est : {winner}</p>}
+                    <button onClick={resetGame}>Recommencer</button>
+                </div>
+            )}
+            {!winner && <p>Tour de : {isXNext ? "X" : "O"}</p>}
+        </div>
+    );
+}
