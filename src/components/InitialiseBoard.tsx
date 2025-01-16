@@ -82,7 +82,7 @@ export function InitialiseBoard({ player1, player2, updateScores }) {
                                 style={{
                                     width: "80px",
                                     height: "80px",
-                                    objectFit: "contain",d
+                                    objectFit: "contain",
                                     position: "absolute",
                                     top: "50%",
                                     left: "50%",
