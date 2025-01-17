@@ -23,16 +23,21 @@ export function InitialiseBoard({ player1, player2, updateScores }) {
     };
 
     const checkWinner = (newBoard) => {
+        let winner = null;
         for (let i = 0; i < 3; i++) {
             if (newBoard[i][0] && newBoard[i][0] === newBoard[i][1] && newBoard[i][0] === newBoard[i][2]) {
-                declareWinner(newBoard[i][0]);
-                return;
+                winner = newBoard[i][0];
+                break;
+                /* declareWinner(newBoard[i][0]);
+                return; */
             }
             if (newBoard[0][i] && newBoard[0][i] === newBoard[1][i] && newBoard[0][i] === newBoard[2][i]) {
-                declareWinner(newBoard[0][i]);
-                return;
+                winner = newBoard[0][i];
+                /* declareWinner(newBoard[0][i]);
+                return; */
             }
         }
+        if (winner) return declareWinner(winner);
         if (newBoard[0][0] && newBoard[0][0] === newBoard[1][1] && newBoard[0][0] === newBoard[2][2]) {
             declareWinner(newBoard[0][0]);
             return;
@@ -75,35 +80,21 @@ export function InitialiseBoard({ player1, player2, updateScores }) {
                             position: "relative",
                         }}
                     >
-                        {cell === "X" ? (
+                        {null !== cell && (
                             <img
-                                src={crois}
-                                alt="Croix"
-                                style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    objectFit: "contain",
-                                    position: "absolute",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                }}
+                            src={cell === "X" ? crois : rond}
+                            alt="Croix"
+                            style={{
+                                width: "80px",
+                                height: "80px",
+                                objectFit: "contain",
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                            }}
                             />
-                        ) : cell === "O" ? (
-                            <img
-                                src={rond}
-                                alt="Rond"
-                                style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    objectFit: "contain",
-                                    position: "absolute",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                }}
-                            />
-                        ) : null}
+                        )}
                     </td>
                 ))}
             </tr>

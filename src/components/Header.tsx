@@ -16,7 +16,6 @@ export function Header() {
             return;
         }
 
-        // je verifie si le deuxième champ est vide, si oui ca joue contre l'ordinateur
         if (!player2) {
             navigate("/game", { state: { player1, player2: "Ordinateur" } });
         } else {
