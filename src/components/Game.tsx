@@ -1,3 +1,4 @@
+// Game.js
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { InitialiseBoard } from "./InitialiseBoard";
@@ -12,11 +13,12 @@ export function Game() {
     const [gameStarted, setGameStarted] = useState(false);
     const [scores, setScores] = useState({ [player1]: 0, [player2]: 0 });
 
+    const isVsComputer = !player2 || player2 === "Ordinateur";
 
     useEffect(() => {
         const savedPlayer1Score = localStorage.getItem(`victoire-${player1}`);
         const savedPlayer2Score = localStorage.getItem(`victoire-${player2}`);
-        
+
         if (savedPlayer1Score) {
             setScores((prevScores) => ({ ...prevScores, [player1]: parseInt(savedPlayer1Score, 10) }));
         }
@@ -45,17 +47,17 @@ export function Game() {
                     {gameStarted && (
                         <InitialiseBoard
                             player1={player1}
-                            player2={player2}
+                            player2={isVsComputer ? "Ordinateur" : player2}
                             updateScores={updateScores}
+                            isVsComputer={isVsComputer}
                         />
                     )}
                 </figure>
                 <div className="card-body items-center text-center bg-custom">
                     <h2 className="card-title text-white">Morpion</h2>
                     <p className="text-white">
-                        {player1} (victoires : {scores[player1]}) VS {player2} (victoires :{" "}
+                        {player1} (victoires : {scores[player1]}) VS {isVsComputer ? "Ordinateur" : player2} (victoires :
                         {scores[player2]})
-                        
                     </p>
                     <div className="card-actions flex flex-col space-y-2">
                         {!gameStarted && (

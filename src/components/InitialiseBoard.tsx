@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+// InitialiseBoard.js
+import React, { useState, useEffect } from "react";
 import "../css/game.css";
 import rond from "../assets/circle.svg";
 import crois from "../assets/cross.svg";
 
-export function InitialiseBoard({ player1, player2, updateScores }) {
+export function InitialiseBoard({ player1, player2, updateScores, isVsComputer }) {
     const [board, setBoard] = useState(Array(3).fill(null).map(() => Array(3).fill(null)));
     const [isXNext, setIsXNext] = useState(true);
     const [winner, setWinner] = useState(null);
+
+    useEffect(() => {
+        if (isVsComputer && !isXNext && !winner) {
+            setTimeout(computerMove, 500); 
+        }
+    }, [isXNext, isVsComputer, winner]);
 
     const handleClick = (i, j) => {
         if (board[i][j] !== null || winner) return;
@@ -22,19 +29,29 @@ export function InitialiseBoard({ player1, player2, updateScores }) {
         checkWinner(newBoard);
     };
 
+    const computerMove = () => {
+        let emptyCells = [];
+        board.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if (cell === null) emptyCells.push([i, j]);
+            });
+        });
+
+        if (emptyCells.length > 0) {
+            const [i, j] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            handleClick(i, j);
+        }
+    };
+
     const checkWinner = (newBoard) => {
         let winner = null;
         for (let i = 0; i < 3; i++) {
             if (newBoard[i][0] && newBoard[i][0] === newBoard[i][1] && newBoard[i][0] === newBoard[i][2]) {
                 winner = newBoard[i][0];
                 break;
-                /* declareWinner(newBoard[i][0]);
-                return; */
             }
             if (newBoard[0][i] && newBoard[0][i] === newBoard[1][i] && newBoard[0][i] === newBoard[2][i]) {
                 winner = newBoard[0][i];
-                /* declareWinner(newBoard[0][i]);
-                return; */
             }
         }
         if (winner) return declareWinner(winner);
@@ -55,7 +72,7 @@ export function InitialiseBoard({ player1, player2, updateScores }) {
     const declareWinner = (player) => {
         const winnerName = player === "X" ? player1 : player2;
         setWinner(winnerName);
-        updateScores(winnerName); 
+        updateScores(winnerName);
     };
 
     const resetGame = () => {
@@ -82,17 +99,17 @@ export function InitialiseBoard({ player1, player2, updateScores }) {
                     >
                         {null !== cell && (
                             <img
-                            src={cell === "X" ? crois : rond}
-                            alt="Croix"
-                            style={{
-                                width: "80px",
-                                height: "80px",
-                                objectFit: "contain",
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                            }}
+                                src={cell === "X" ? crois : rond}
+                                alt={cell}
+                                style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    objectFit: "contain",
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                }}
                             />
                         )}
                     </td>
