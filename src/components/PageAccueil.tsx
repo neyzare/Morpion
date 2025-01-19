@@ -59,6 +59,14 @@ export function PageAccueil() {
                         >
                             Démarrer le jeu
                         </button>
+
+                        <button
+                            className="btn btn-custom text-white hover:bg-opacity-80 w-full py-3"
+                            onClick={() => navigate("/classement")}
+                        >
+                            Classement
+                        </button>
+                        
                     </div>
                 </div>
             </div>
